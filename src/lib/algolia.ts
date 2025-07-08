@@ -2,22 +2,31 @@ import algoliasearch from 'algoliasearch'
 import { getDocs, collection } from 'firebase/firestore'
 import { db } from './firebase'
 
-if (!process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || !process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY) {
-  throw new Error('Algolia environment variables are not set')
+// Create Algolia client instance with optimized settings (only if env vars are available)
+const createAlgoliaClient = () => {
+  if (!process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || !process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY) {
+    console.warn('Algolia environment variables are not set')
+    return null
+  }
+  
+  return algoliasearch(
+    process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
+    process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
+  )
 }
 
-// Create Algolia client instance with optimized settings
-export const searchClient = algoliasearch(
-  process.env.NEXT_PUBLIC_ALGOLIA_APP_ID,
-  process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY
-)
+export const searchClient = createAlgoliaClient()
 
 // Initialize index with optimized settings
-export const carsIndex = searchClient.initIndex('autoluxe-dxb')
+export const carsIndex = searchClient ? searchClient.initIndex('autoluxe-dxb') : null
 
 // Configure index settings for better performance
 export const configureAlgoliaIndex = async () => {
   console.log('Starting Algolia index configuration...')
+  
+  if (!carsIndex) {
+    throw new Error('Algolia index not initialized - missing environment variables')
+  }
   
   try {
     console.log('Setting index settings...')

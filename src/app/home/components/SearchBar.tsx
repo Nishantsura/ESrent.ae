@@ -4,7 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Car } from "@/types/car";
+
+// Extended Car type for Algolia search results
+interface AlgoliaCarResult extends Car {
+  objectID?: string;
+}
 import { searchAPI } from "@/services/api";
+import { carsIndex } from '@/lib/algolia';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -23,11 +29,11 @@ const formatPrice = (dailyPrice: number | undefined | null) => {
 export function SearchBar() {
   const router = useRouter();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<Car[]>([]);
+  const [results, setResults] = useState<AlgoliaCarResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLFormElement>(null);
-  const searchCache = useRef<Record<string, Car[]>>({});
+  const searchCache = useRef<Record<string, AlgoliaCarResult[]>>({});
   const debouncedQuery = useDebounce(query, 500);
 
   useEffect(() => {
@@ -65,7 +71,7 @@ export function SearchBar() {
         
         // Fetch additional data from Firestore for each result
         const enhancedResults = await Promise.all(
-          searchResults.map(async (car) => {
+          (searchResults as AlgoliaCarResult[]).map(async (car) => {
             try {
               // Use objectID from Algolia result, fallback to id
               const carId = car.objectID || car.id;
@@ -79,7 +85,7 @@ export function SearchBar() {
                   objectID: car.objectID, // Keep Algolia objectID
                   dailyPrice: carDoc.data().dailyPrice ?? car.dailyPrice, // Fallback to Algolia price
                   images: carDoc.data().images ?? car.images // Fallback to Algolia images
-                } as Car;
+                } as AlgoliaCarResult;
               }
               return car;
             } catch (error) {

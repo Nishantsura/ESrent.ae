@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Car } from '@/types/car';
-import { carService } from '@/services/carService';
+import { firebaseCarService } from '@/services/firebaseService';
 import { SearchResultsSkeleton } from '@/components/ui/card-skeleton';
 import { PageHeader } from '@/components/PageHeader';
 import { ErrorState } from '@/components/ui/error-state';
@@ -29,7 +29,8 @@ export default function CategoryPage() {
     try {
       setLoading(true);
       const decodedType = decodeURIComponent(slug);
-      const carsData = await carService.getCarsByType(decodedType);
+      const allCars = await firebaseCarService.getAllCars();
+      const carsData = allCars.filter(car => car.category && car.category.toLowerCase() === decodedType.toLowerCase());
       setCars(carsData);
     } catch (error) {
       console.error('Error loading cars:', error);

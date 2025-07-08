@@ -528,29 +528,20 @@ export const brandAPI = {
 export const searchAPI = {
   search: async (query: string): Promise<Car[]> => {
     try {
-      const { searchClient } = await import('@/lib/algolia');
-      const index = searchClient.initIndex('autoluxe-dxb');
-      const { hits } = await index.search<Car>(query, {
-        restrictSearchableAttributes: ['brand', 'name', 'model'],
-        hitsPerPage: 8,
-        distinct: true,
-        attributesToRetrieve: [
-          'objectID',
-          'brand',
-          'name',
-          'model',
-          'year',
-          'dailyPrice',
-          'images'
-        ],
-        attributesToHighlight: ['brand', 'name', 'model']
+      const response = await fetch(`${API_BASE_URL}/api/search?q=${encodeURIComponent(query)}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
       });
-      return hits.map(hit => ({
-        ...hit,
-        _id: hit.objectID,
-        dailyPrice: Number(hit.dailyPrice),
-        images: hit.images || []
-      }));
+      
+      if (!response.ok) {
+        throw new Error('Search request failed');
+      }
+      
+      const results = await response.json();
+      return results;
     } catch (error) {
       console.error('Error searching cars:', error);
       return [];

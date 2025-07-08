@@ -11,7 +11,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { Brand } from '@/types/brand';
 import { Car } from '@/types/car';
 import { brandService } from '@/services/brandService';
-import { carService } from '@/services/carService';
+import { firebaseCarService } from '@/services/firebaseService';
 import { SearchResultsSkeleton } from '@/components/ui/card-skeleton';
 import { PageHeader } from '@/components/PageHeader';
 import { ChevronLeft } from 'lucide-react';
@@ -57,7 +57,8 @@ export default function BrandPage() {
         setBrand(brandData);
 
         if (brandData) {
-          const carsData = await carService.getCarsByBrand(brandData.name);
+          const allCars = await firebaseCarService.getAllCars();
+          const carsData = allCars.filter(car => car.brand === brandData.name);
           setCars(carsData);
         }
       } catch (error) {

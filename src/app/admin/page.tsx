@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { Car } from '@/types/car';
-import { carService } from '@/services/carService';
+import { carAPI } from '@/services/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export default function AdminDashboard() {
@@ -22,7 +22,7 @@ export default function AdminDashboard() {
           throw new Error('Not authenticated');
         }
 
-        const carsData = await carService.getAllCars();
+        const carsData = await carAPI.getAllCars();
         setCars(carsData);
       } catch (error: any) {
         console.error('Error fetching cars:', error);

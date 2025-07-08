@@ -9,20 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SearchResultsSkeleton } from '@/components/ui/card-skeleton';
 import { Car } from '@/types/car'
-import { carsIndex } from '@/lib/algolia'
+import { searchAPI } from '@/services/api'
 import { Header } from '@/app/home/components/Header'
-import { db } from '@/lib/firebase'
-import { doc, getDoc } from 'firebase/firestore'
 import { SearchBar } from '@/app/home/components/SearchBar'
-
-// Define the Algolia hit type that extends the base hit type with our Car properties
-interface AlgoliaHit extends Omit<Car, 'id'> {
-  objectID: string;
-  _highlightResult?: Record<string, any>;
-  _snippetResult?: Record<string, any>;
-  _rankingInfo?: Record<string, any>;
-  _distinctSeqID?: number;
-}
 
 export default function SearchResultsPage() {
   return (
@@ -52,69 +41,12 @@ function SearchResults() {
       }
 
       try {
-        const { hits } = await carsIndex.search<AlgoliaHit>(query, {
-          // Remove restriction to search across all attributes
-        })
-        console.log('Search hits:', hits); // Debug log
+        // Use our new search API instead of Algolia
+        const searchResults = await searchAPI.search(query);
+        console.log('Search results:', searchResults); // Debug log
 
-        // Fetch additional data from Firestore for each hit
-        const enrichedResults = await Promise.all(
-          hits.map(async (hit) => {
-            try {
-              // Get the full document from Firestore
-              const carDoc = await getDoc(doc(db, 'cars', hit.objectID));
-              
-              if (carDoc.exists()) {
-                const firestoreData = carDoc.data();
-                // Merge Algolia and Firestore data, preferring Firestore data
-                return {
-                  id: hit.objectID,
-                  ...hit,
-                  ...firestoreData,
-                  // Ensure critical fields are properly typed
-                  seats: Number(firestoreData.seats || hit.seats) || 0,
-                  year: Number(firestoreData.year || hit.year) || 0,
-                  rating: Number(firestoreData.rating || hit.rating) || 0,
-                  dailyPrice: Number(firestoreData.dailyPrice || hit.dailyPrice) || 0,
-                  advancePayment: Boolean(firestoreData.advancePayment ?? hit.advancePayment),
-                  rareCar: Boolean(firestoreData.rareCar ?? hit.rareCar),
-                  featured: Boolean(firestoreData.featured ?? hit.featured),
-                  available: Boolean(firestoreData.available ?? hit.available),
-                  images: Array.isArray(firestoreData.images) ? firestoreData.images : (Array.isArray(hit.images) ? hit.images : []),
-                  tags: Array.isArray(firestoreData.tags) ? firestoreData.tags : (Array.isArray(hit.tags) ? hit.tags : []),
-                } as Car;
-              }
-            } catch (error) {
-              console.error(`Error fetching Firestore data for car ${hit.objectID}:`, error);
-            }
-            
-            // Fallback to Algolia data if Firestore fetch fails
-            return {
-              id: hit.objectID,
-              name: hit.name || '',
-              brand: hit.brand || '',
-              transmission: hit.transmission || 'automatic',
-              seats: Number(hit.seats) || 0,
-              year: Number(hit.year) || 0,
-              rating: Number(hit.rating) || 0,
-              advancePayment: Boolean(hit.advancePayment),
-              rareCar: Boolean(hit.rareCar),
-              featured: Boolean(hit.featured),
-              fuelType: hit.fuelType || 'petrol',
-              engineCapacity: hit.engineCapacity || '',
-              power: hit.power || '',
-              dailyPrice: typeof hit.dailyPrice === 'number' ? hit.dailyPrice : 0,
-              type: hit.type || 'sedan',
-              tags: Array.isArray(hit.tags) ? hit.tags : [],
-              description: hit.description || '',
-              images: Array.isArray(hit.images) ? hit.images : [],
-              available: Boolean(hit.available),
-              location: hit.location || { name: 'Dubai', coordinates: { lat: 25.2048, lng: 55.2708 } }
-            } as Car;
-          })
-        );
-
-        setResults(enrichedResults);
+        // The results already come from Firebase, so we can use them directly
+        setResults(searchResults);
       } catch (error) {
         console.error('Error searching cars:', error)
         setResults([])
@@ -167,22 +99,22 @@ function SearchResults() {
                           <span>{car.year}</span>
                         </div>
                       )}
-                      {car.seats && (
+                      {car.transmission && (
                         <div className="flex items-center gap-1">
                           <Users className="h-4 w-4" />
-                          <span>{car.seats} seats</span>
+                          <span>{car.transmission}</span>
                         </div>
                       )}
-                      {car.fuelType && (
+                      {car.fuel && (
                         <div className="flex items-center gap-1">
                           <Fuel className="h-4 w-4" />
-                          <span>{car.fuelType}</span>
+                          <span>{car.fuel}</span>
                         </div>
                       )}
-                      {car.location && typeof car.location === 'object' && 'name' in car.location && (
+                      {car.brand && (
                         <div className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
-                          <span>{car.location.name}</span>
+                          <span>{car.brand}</span>
                         </div>
                       )}
                     </div>

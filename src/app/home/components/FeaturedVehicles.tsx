@@ -33,9 +33,9 @@ export function FeaturedVehicles({ cars }: FeaturedVehiclesProps) {
       const matchesTransmission = !filters.transmission || 
                                  car.transmission.toLowerCase() === filters.transmission.toLowerCase();
       const matchesType = filters.types.length === 0 || 
-                         filters.types.includes(car.type.toLowerCase());
+                         filters.types.includes((car.category || '').toLowerCase());
       const matchesTags = filters.tags.length === 0 ||
-                         car.tags.some(tag => filters.tags.includes(tag.toLowerCase()));
+                         (car.features || []).some((tag: string) => filters.tags.includes(tag.toLowerCase()));
 
       return matchesPrice && matchesTransmission && matchesType && matchesTags;
     });

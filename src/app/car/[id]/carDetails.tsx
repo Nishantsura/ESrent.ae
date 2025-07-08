@@ -16,7 +16,7 @@ import { CarPricing } from "@/components/car/CarPricing"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { CarBrandLogo } from "@/components/car/CarBrandLogo"
-import { carService } from "@/services/carService"
+import { firebaseCarService } from "@/services/firebaseService"
 import { CarCard } from '@/components/car/CarCard'
 import Image from 'next/image'
 import { Card, CardContent } from "@/components/ui/card"
@@ -33,9 +33,9 @@ function SimilarCars({ currentCar }: { currentCar: Car }) {
     const fetchSimilarCars = async () => {
       try {
         // Get cars with same brand, excluding current car
-        const allCars = await carService.getAllCars()
+        const allCars = await firebaseCarService.getAllCars()
         const filtered = allCars
-          .filter(car => 
+          .filter((car: Car) => 
             car.id !== currentCar.id && 
             car.brand === currentCar.brand
           )

@@ -4,9 +4,7 @@ import { Suspense, useEffect, useState, Component, ReactNode } from "react"
 import { Car } from "@/types/car"
 import { Brand } from "@/types/brand"
 import { Category } from "@/types/category"
-import { carService } from "@/services/carService"
-import { brandService } from "@/services/brandService"
-import { categoryService } from "@/services/categoryService"
+import { firebaseCarService, firebaseBrandService, firebaseCategoryService } from "@/services/firebaseService"
 import { Header } from "./components/Header"
 import { SearchBar } from "./components/SearchBar"
 
@@ -122,9 +120,9 @@ function FeaturedContent() {
     const loadData = async () => {
       try {
         const [cars, brands, categories] = await Promise.all([
-          fetchWithCache('featuredCars', carService.getFeaturedCars),
-          fetchWithCache('featuredBrands', brandService.getFeaturedBrands),
-          fetchWithCache('featuredCategories', categoryService.getFeaturedCategories),
+          fetchWithCache('featuredCars', firebaseCarService.getFeaturedCars),
+          fetchWithCache('featuredBrands', firebaseBrandService.getFeaturedBrands),
+          fetchWithCache('featuredCategories', firebaseCategoryService.getFeaturedCategories),
         ]);
         setData({ cars, brands, categories });
       } catch (err) {

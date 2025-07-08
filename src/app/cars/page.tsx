@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Car } from '@/types/car'
-import { carService } from '@/services/carService'
+import { firebaseCarService } from '@/services/firebaseService'
 import { Header } from '../home/components/Header'
 import { FilterModal, FilterValues } from '../home/components/FilterModal'
 import { Button } from '@/components/ui/button'
@@ -63,7 +63,7 @@ export default function CarsPage() {
   useEffect(() => {
     const loadCars = async () => {
       try {
-        const allCars = await carService.getAllCars()
+        const allCars = await firebaseCarService.getAllCars()
         setCars(allCars)
         setFilteredCars(allCars)
       } catch (error) {

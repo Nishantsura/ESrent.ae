@@ -166,30 +166,20 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
       // Required fields for server
       name: formData.name.trim(),
       brand: formData.brand.trim(),
+      model: formData.model?.trim() || formData.name.trim(), // Use name as fallback for model
+      year: formData.year || new Date().getFullYear(),
       transmission: formData.transmission || 'Automatic',
-      fuelType: formData.fuel || 'Petrol', // Server expects 'fuelType', not 'fuel'
-      type: formData.category || 'Sedan', // Server expects 'type', not 'category'
+      fuel: formData.fuel || 'Petrol', // Server expects 'fuel', not 'fuelType'
+      dailyPrice: formData.dailyPrice || 0,
       
       // Optional fields that server accepts
-      model: formData.model || '',
-      year: formData.year || new Date().getFullYear(),
+      category: formData.category || 'Sedan', // Server expects 'category', not 'type'
       mileage: formData.mileage || 0,
-      dailyPrice: formData.dailyPrice || 0,
       images: formData.images || [],
       description: formData.description || '',
       features: formData.features || [],
-      available: formData.isAvailable ?? true, // Server expects 'available', not 'isAvailable'
-      featured: formData.isFeatured ?? false, // Server expects 'featured', not 'isFeatured'
-      
-      // Additional server fields
-      seats: 4, // Default value
-      rating: 5, // Default value
-      advancePayment: false,
-      rareCar: false,
-      engineCapacity: '',
-      power: '',
-      tags: [],
-      location: null
+      isAvailable: formData.isAvailable ?? true, // Server expects 'isAvailable'
+      isFeatured: formData.isFeatured ?? false, // Server expects 'isFeatured'
     };
     
     await onSave(carData);

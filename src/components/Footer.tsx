@@ -1,0 +1,125 @@
+import Link from 'next/link';
+import { Instagram, Mail, Phone } from 'lucide-react';
+import { FaSnapchat, FaInstagram, FaPhone } from 'react-icons/fa6';
+import { MdOutlineMail } from 'react-icons/md';
+
+const Footer = () => {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="border-t border-border bg-background mt-16">
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {/* Main Footer Content */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+          {/* Company Info */}
+          <div className="flex flex-col gap-3">
+            <img
+              src="/images/ES logo (1).svg"
+              alt="ES Rent a Car Logo"
+              className="w-20 h-20 mb-2"
+              style={{ filter: 'invert(89%) sepia(90%) saturate(1352%) hue-rotate(127deg) brightness(103%) contrast(97%)' }}
+            />
+            <p className="text-sm text-muted-foreground mb-2">
+              Your premier destination for luxury and exotic car rentals.
+            </p>
+            <div className="text-sm text-muted-foreground mb-2">
+              <p>Dubai, UAE</p>
+              <a 
+                href="mailto:info@esrent.com" 
+                className="hover:text-foreground transition-colors"
+              >
+                info@esrent.com
+              </a>
+            </div>
+            {/* Social Links Row */}
+            <div className="flex flex-row gap-6 mt-2">
+              <a href="https://snapchat.com/t/JyDBbZS1" target="_blank" rel="noopener noreferrer" aria-label="Snapchat">
+                <FaSnapchat size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+              </a>
+              <a href="https://www.instagram.com/elite.slk?igsh=ZjNzZ2Y2dWJ1Z2Y2" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <FaInstagram size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+              </a>
+              <a href="mailto:info@esrent.com" aria-label="Email">
+                <MdOutlineMail size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+              </a>
+              <a href="tel:+971553553626" aria-label="Phone">
+                <FaPhone size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-foreground">Quick Links</h3>
+            <nav className="grid grid-cols-2 gap-2">
+              <Link 
+                href="/categories" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Categories
+              </Link>
+              <Link 
+                href="/brands" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Brands
+              </Link>
+              <Link 
+                href="/faq" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                FAQ
+              </Link>
+              <Link 
+                href="/about" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                About
+              </Link>
+            </nav>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="font-semibold text-lg mb-3 text-foreground">Support</h3>
+            <nav className="space-y-2">
+              <Link 
+                href="/terms" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
+              >
+                Terms & Conditions
+              </Link>
+              <Link 
+                href="/privacy-policy" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
+              >
+                Privacy Policy
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors block"
+              >
+                Contact Us
+              </Link>
+            </nav>
+          </div>
+        </div>
+
+        {/* Copyright Bar */}
+        <div className="pt-8 border-t border-border">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <div className="text-sm text-muted-foreground">
+              {currentYear} AutoLuxe. All rights reserved.
+            </div>
+           
+          </div>
+        </div>
+        <div className="text-center text-sm text-muted-foreground mt-4">
+          <span>Made with 💙 by Pro Quo</span>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

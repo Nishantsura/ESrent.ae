@@ -1,0 +1,104 @@
+@import './styles/typography.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    
+    --secondary: 167 56% 53%; /* #41cdad */
+    --secondary-foreground: 0 0% 0%;
+    
+    --muted: 0 0% 10%;
+    --muted-foreground: 0 0% 70%;
+    
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 0% 100%;
+ 
+    --radius: 0.5rem;
+  }
+ 
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 210 40% 98%;
+    --primary-foreground: 220 65% 23%;
+ 
+    --secondary: 167 56% 53%; /* #41cdad */
+    --secondary-foreground: 0 0% 0%;
+ 
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+ 
+    --accent: 244 43% 76%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 216 12.2% 83.9%;
+  }
+
+  body {
+    background-color: #000000;
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+/* Custom date input styling */
+input[type="date"] {
+  text-align: left !important;
+  direction: ltr !important;
+}
+
+@font-face {
+  font-family: 'Agrandir';
+  font-weight: 700;
+  font-style: normal;
+  src: url('../../public/fonts/Agrandir-TextBold.otf') format('opentype');
+}
+
+@font-face {
+  font-family: 'ClashGrotesk';
+  font-weight: 500,600,700;
+  font-style: normal;
+  src: url('../../public/fonts/ClashGrotesk-Variable.ttf') format('truetype');
+}

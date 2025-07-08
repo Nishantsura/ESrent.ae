@@ -1,6 +1,6 @@
 import { Car } from '@/types/car';
 import { carAPI } from './api';
-import { categoryService } from './categoryService';
+import { categoryAPI } from './api';
 
 // Types
 type CarType = 'SUV' | 'Sedan' | 'Hatchback' | 'Coupe' | 'Convertible' | 'Wagon';
@@ -18,7 +18,7 @@ class CarService {
 
   async getCarsByType(type: string): Promise<Car[]> {
     // Get all car type categories to validate against
-    const carTypes = await categoryService.getCategoriesByType('carType');
+    const carTypes = await categoryAPI.getCategoriesByType('carType');
     const validType = carTypes.find(category => 
       category.name.toLowerCase() === type.toLowerCase() || 
       category.slug.toLowerCase() === type.toLowerCase()
@@ -30,7 +30,7 @@ class CarService {
 
   async getCarsByFuelType(fuelType: string): Promise<Car[]> {
     // Get all fuel type categories to validate against
-    const fuelTypes = await categoryService.getCategoriesByType('fuelType');
+    const fuelTypes = await categoryAPI.getCategoriesByType('fuelType');
     const validFuelType = fuelTypes.find(category => 
       category.name.toLowerCase() === fuelType.toLowerCase() || 
       category.slug.toLowerCase() === fuelType.toLowerCase()
@@ -42,7 +42,7 @@ class CarService {
 
   async getCarsByTag(tag: string): Promise<Car[]> {
     // Get all tag categories to validate against
-    const tags = await categoryService.getCategoriesByType('tag');
+    const tags = await categoryAPI.getCategoriesByType('tag');
     const validTag = tags.find(category => 
       category.name.toLowerCase() === tag.toLowerCase() || 
       category.slug.toLowerCase() === tag.toLowerCase()

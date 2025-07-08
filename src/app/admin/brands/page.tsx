@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { Brand, NewBrand } from '@/types/brand';
-import { brandService } from '@/services/brandService';
+import { brandAPI } from '@/services/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
@@ -50,7 +50,7 @@ export default function AdminBrands() {
           throw new Error('Not authenticated');
         }
 
-        const brandsData = await brandService.getAllBrands();
+        const brandsData = await brandAPI.getAllBrands();
         setBrands(brandsData);
       } catch (error: any) {
         console.error('Error fetching brands:', error);
@@ -70,7 +70,7 @@ export default function AdminBrands() {
     try {
       if (selectedBrand && selectedBrand.id) {
         // Update existing brand
-        await brandService.updateBrand(selectedBrand.id, brandData);
+        await brandAPI.updateBrand(selectedBrand.id, brandData);
         setStatusModal({
           open: true,
           title: 'Brand Updated',
@@ -79,7 +79,7 @@ export default function AdminBrands() {
         });
       } else {
         // Create new brand
-        await brandService.createBrand(brandData as NewBrand);
+        await brandAPI.createBrand(brandData as NewBrand);
         setStatusModal({
           open: true,
           title: 'Brand Created',
@@ -89,7 +89,7 @@ export default function AdminBrands() {
       }
       
       // Refresh brands list
-      const brandsData = await brandService.getAllBrands();
+      const brandsData = await brandAPI.getAllBrands();
       setBrands(brandsData);
       setDialogOpen(false);
       setSelectedBrand(undefined);
@@ -108,7 +108,7 @@ export default function AdminBrands() {
     if (!selectedBrand || !selectedBrand.id) return;
 
     try {
-      await brandService.deleteBrand(selectedBrand.id);
+      await brandAPI.deleteBrand(selectedBrand.id);
       setStatusModal({
         open: true,
         title: 'Brand Deleted',
@@ -117,7 +117,7 @@ export default function AdminBrands() {
       });
       
       // Refresh brands list
-      const brandsData = await brandService.getAllBrands();
+      const brandsData = await brandAPI.getAllBrands();
       setBrands(brandsData);
       setDeleteDialogOpen(false);
       setSelectedBrand(undefined);

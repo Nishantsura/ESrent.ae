@@ -288,18 +288,12 @@ export const categoryAPI = {
     }
   },
 
-  createCategory: async (category: FormData): Promise<Category> => {
+  createCategory: async (category: Partial<Category>): Promise<Category> => {
     try {
       const token = await auth.currentUser?.getIdToken();
       if (!token) {
         throw new Error('Not authenticated');
       }
-
-      // Convert FormData to JSON object
-      const categoryData: Record<string, any> = {};
-      category.forEach((value, key) => {
-        categoryData[key] = value;
-      });
 
       const response = await fetch(`${API_BASE_URL}/api/categories`, {
         method: 'POST',
@@ -307,7 +301,7 @@ export const categoryAPI = {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(categoryData),
+        body: JSON.stringify(category),
       });
       
       if (!response.ok) {
@@ -326,7 +320,7 @@ export const categoryAPI = {
     }
   },
 
-  updateCategory: async (id: string, category: FormData): Promise<Category> => {
+  updateCategory: async (id: string, category: Partial<Category>): Promise<Category> => {
     try {
       const token = await auth.currentUser?.getIdToken();
       if (!token) {
@@ -334,17 +328,15 @@ export const categoryAPI = {
       }
 
       console.log('Updating category with ID:', id);
-      console.log('FormData contents:');
-      for (const [key, value] of category.entries()) {
-        console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value);
-      }
+      console.log('Category data:', category);
 
       const response = await fetch(`${API_BASE_URL}/api/categories/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
-        body: category,
+        body: JSON.stringify(category),
       });
       
       if (!response.ok) {

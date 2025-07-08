@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { FaWhatsapp } from "react-icons/fa";
 import { Brand } from '@/types/brand';
 import { Car } from '@/types/car';
-import { brandService } from '@/services/brandService';
+import { brandAPI } from '@/services/api';
 import { firebaseCarService } from '@/services/firebaseService';
 import { SearchResultsSkeleton } from '@/components/ui/card-skeleton';
 import { PageHeader } from '@/components/PageHeader';
@@ -53,7 +53,7 @@ export default function BrandPage() {
       
       try {
         setLoading(true);
-        const brandData = await brandService.getBrandBySlug(slug);
+        const brandData = await brandAPI.getBrandBySlug(slug);
         setBrand(brandData);
 
         if (brandData) {

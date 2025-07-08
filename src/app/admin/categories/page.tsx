@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle, Pencil, Trash2, Plus } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { Category } from '@/types/category';
-import { categoryService } from '@/services/categoryService';
+import { categoryAPI } from '@/services/api';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { CategoryDialog } from '@/components/admin/category-dialog';
@@ -41,11 +41,11 @@ export default function AdminCategories() {
       const token = await auth.currentUser.getIdToken();
 
       // Fetch all category types
-      const [carTypes, fuelTypes, tags] = await Promise.all([
-        categoryService.getCategoriesByType('carType'),
-        categoryService.getCategoriesByType('fuelType'),
-        categoryService.getCategoriesByType('tag')
-      ]);
+              const [carTypes, fuelTypes, tags] = await Promise.all([
+          categoryAPI.getCategoriesByType('carType'),
+          categoryAPI.getCategoriesByType('fuelType'),
+          categoryAPI.getCategoriesByType('tag')
+        ]);
 
       // Combine and sort by name
       const allCategories = [...carTypes, ...fuelTypes, ...tags]
@@ -89,7 +89,7 @@ export default function AdminCategories() {
       }
       const token = await auth.currentUser.getIdToken();
 
-      await categoryService.deleteCategory(category.id);
+      await categoryAPI.deleteCategory(category.id);
       toast({
         title: 'Category deleted',
         description: `${category.name} has been deleted successfully.`,
@@ -114,14 +114,14 @@ export default function AdminCategories() {
 
       let savedCategory: Category;
       if (selectedCategory?.id) {
-        savedCategory = await categoryService.updateCategory(selectedCategory.id, categoryData);
+        savedCategory = await categoryAPI.updateCategory(selectedCategory.id, categoryData);
         setCategories(prevCategories => 
           prevCategories.map(category => 
             category.id === selectedCategory.id ? { ...category, ...savedCategory } : category
           )
         );
       } else {
-        savedCategory = await categoryService.createCategory(categoryData);
+        savedCategory = await categoryAPI.createCategory(categoryData);
         setCategories(prevCategories => [...prevCategories, savedCategory]);
       }
 

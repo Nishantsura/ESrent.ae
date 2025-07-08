@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent } from "@/components/ui/card";
 import { CategoryCardSkeleton } from '@/components/ui/card-skeleton';
 import { Category } from '@/types/category';
-import { categoryService } from '@/services/categoryService';
+import { categoryAPI } from '@/services/api';
 import { carService } from '@/services/carService';
 import { Header } from '../home/components/Header';
 import { Button } from '@/components/ui/button';
@@ -37,9 +37,9 @@ export default function CategoriesPage() {
       try {
         // Fetch all categories
         const [carTypesList, fuelTypesList, tagsList] = await Promise.all([
-          categoryService.getCategoriesByType('carType'),
-          categoryService.getCategoriesByType('fuelType'),
-          categoryService.getCategoriesByType('tag')
+                  categoryAPI.getCategoriesByType('carType'),
+        categoryAPI.getCategoriesByType('fuelType'),
+        categoryAPI.getCategoriesByType('tag')
         ]);
         
         // Fetch car counts for each category

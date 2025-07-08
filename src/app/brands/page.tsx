@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { Brand } from '@/types/brand';
-import { brandService } from '@/services/brandService';
+import { brandAPI } from '@/services/api';
 import { BrandDetailsSkeleton } from '@/components/ui/card-skeleton';
 import { PageHeader } from '@/components/PageHeader';
 
@@ -16,7 +16,7 @@ export default function BrandsPage() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const brandsData = await brandService.getAllBrands();
+        const brandsData = await brandAPI.getAllBrands();
         setBrands(brandsData);
       } catch (error) {
         console.error('Error fetching brands:', error);

@@ -19,8 +19,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
-import { brandService } from '@/services/brandService';
-import { categoryService } from '@/services/categoryService';
+import { brandAPI, categoryAPI } from '@/services/api';
 import { uploadImages } from '@/lib/uploadImages';
 import { Image as ImageIcon, X, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -74,9 +73,9 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
     const fetchData = async () => {
       try {
         const [brandsData, tagData, carTypeData] = await Promise.all([
-          brandService.getAllBrands(),
-          categoryService.getCategoriesByType('tag'),
-          categoryService.getCategoriesByType('carType')
+          brandAPI.getAllBrands(),
+          categoryAPI.getCategoriesByType('tag'),
+          categoryAPI.getCategoriesByType('carType')
         ]);
         setBrands(brandsData);
         setTagCategories(tagData);

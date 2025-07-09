@@ -3,8 +3,8 @@ import { Category } from '@/types/category';
 import { Brand } from '@/types/brand';
 import { auth } from '@/lib/firebase';
 
-// Use local Next.js API routes for both development and production
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+// Use backend server URL for API calls
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || process.env.NEXT_PUBLIC_SERVER_URL || '';
 console.log('API_BASE_URL configured as:', API_BASE_URL || 'local API routes');
 
 // Car API endpoints

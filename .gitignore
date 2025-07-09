@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# server specific
+server/node_modules
+server/.env
+server/serviceAccountKey.json
+server/adminsdk-*.json

@@ -16,7 +16,7 @@ export default function AdminLogin() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.email?.endsWith('@autoluxe.com')) {
+      if (user && user.email?.endsWith('@esrent.ae')) {
         router.push('/admin');
       }
     });
@@ -32,7 +32,7 @@ export default function AdminLogin() {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
-      if (!userCredential.user.email?.endsWith('@autoluxe.com')) {
+      if (!userCredential.user.email?.endsWith('@esrent.ae')) {
         await auth.signOut();
         setError('Unauthorized access');
         return;
@@ -71,7 +71,7 @@ export default function AdminLogin() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@autoluxe.com"
+              placeholder="admin@esrent.ae"
               required
               disabled={loading}
               className="rounded-lg"

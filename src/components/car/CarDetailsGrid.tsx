@@ -22,7 +22,7 @@ export function CarDetailsGrid({
         <CardContent className="flex items-center gap-3 p-4">
           <Gauge className="h-6 w-6 text-indigo-600" />
           <div>
-            <p className="text-sm text-muted-foreground">Engine</p>
+            <p className="text-sm text-white">Engine</p>
             <p className="font-medium">{engineCapacity ?? 'N/A'}</p>
           </div>
         </CardContent>
@@ -31,7 +31,7 @@ export function CarDetailsGrid({
         <CardContent className="flex items-center gap-3 p-4">
           <Power className="h-6 w-6 text-indigo-600" />
           <div>
-            <p className="text-sm text-muted-foreground">Power</p>
+            <p className="text-sm text-white">Power</p>
             <p className="font-medium">{power ?? 'N/A'}</p>
           </div>
         </CardContent>
@@ -40,7 +40,7 @@ export function CarDetailsGrid({
         <CardContent className="flex items-center gap-3 p-4">
           <Fuel className="h-6 w-6 text-indigo-600" />
           <div>
-            <p className="text-sm text-muted-foreground">Fuel Type</p>
+            <p className="text-sm text-white">Fuel Type</p>
             <p className="font-medium">{fuelType ?? 'N/A'}</p>
           </div>
         </CardContent>
@@ -49,7 +49,7 @@ export function CarDetailsGrid({
         <CardContent className="flex items-center gap-3 p-4">
           <CarFront className="h-6 w-6 text-indigo-600" />
           <div>
-            <p className="text-sm text-muted-foreground">Type</p>
+            <p className="text-sm text-white">Type</p>
             <p className="font-medium">{type ?? 'N/A'}</p>
           </div>
         </CardContent>

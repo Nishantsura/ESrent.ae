@@ -11,7 +11,7 @@ export function CarDescription({ description, tags }: CarDescriptionProps) {
   return (
     <>
       <section className="mb-6">
-        <p className="text-muted-foreground">{description ?? 'No description available'}</p>
+        <p className="text-white">{description ?? 'No description available'}</p>
       </section>
 
       <section className="mb-0">

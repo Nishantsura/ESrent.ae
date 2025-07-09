@@ -28,7 +28,7 @@ async function createAdminUser() {
   try {
     console.log('👤 Creating admin user...');
     
-    const email = 'admin@autoluxe.com';
+    const email = 'admin@esrent.ae';
     const password = 'Admin123!'; // Change this to a secure password
     
     // Check if user already exists

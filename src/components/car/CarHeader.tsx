@@ -67,7 +67,7 @@ export function CarHeader({
           <div className="flex items-center gap-3">
             <Calendar className="h-5 w-5 text-primary" />
             <div className="flex flex-col">
-              <span className="text-xs text-secondary">Pickup Date</span>
+              <span className="text-xs text-white/70">Pickup Date</span>
               <span className="text-sm font-medium text-white">
                 {selectedDate ? new Date(selectedDate).toLocaleDateString('en-US', {
                   weekday: 'short',
@@ -110,7 +110,7 @@ export function CarHeader({
           <div className="flex items-center gap-3">
             <Calendar className="h-5 w-5 text-primary" />
             <div className="flex flex-col">
-              <span className="text-xs text-secondary">Return Date</span>
+              <span className="text-xs text-white/70">Return Date</span>
               <span className="text-sm font-medium text-white">
                 {endDate ? new Date(endDate).toLocaleDateString('en-US', {
                   weekday: 'short',

@@ -46,7 +46,7 @@ export function CarPricing({ car, selectedDate, endDate }: CarPricingProps) {
     <div className="fixed bottom-0 left-0 right-0 p-4 bg-black/90 z-20 shadow-2xl rounded-t-2xl">
       <div className="flex items-center justify-between mb-2 max-w-7xl mx-auto">
         <div className="flex flex-col">
-          <span className="text-md font-semibold text-secondary">
+          <span className="text-md font-semibold text-white">
             {car.dailyPrice ? `AED ${car.dailyPrice.toLocaleString()}/Day` : 'Price on request'}
           </span>
           {totalPrice ? (
@@ -54,7 +54,7 @@ export function CarPricing({ car, selectedDate, endDate }: CarPricingProps) {
               Total: AED {totalPrice.total.toLocaleString()} for {totalPrice.days} day{totalPrice.days > 1 ? 's' : ''}
             </span>
           ) : (
-            <span className="text-xs font-medium text-secondary">
+            <span className="text-xs font-medium text-white/70">
               {!effectivePickupDate ? 'Select pickup date to proceed' : !effectiveEndDate ? 'Select return date to proceed' : ''}
             </span>
           )}

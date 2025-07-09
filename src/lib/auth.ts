@@ -42,10 +42,10 @@ export async function verifyAuth(request: NextRequest): Promise<AuthenticatedUse
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(token);
     
-    // Optional: Check if user email is from authorized domain
-    // if (!decodedToken.email?.endsWith('@autoluxe.com')) {
-    //   throw new Error('Not an authorized email domain');
-    // }
+    // Check if user email is from authorized domain
+    if (!decodedToken.email?.endsWith('@esrent.ae')) {
+      throw new Error('Not an authorized email domain');
+    }
     
     return {
       uid: decodedToken.uid,

@@ -19,7 +19,7 @@ export default function AdminLayout({
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user || !user.email?.endsWith('@autoluxe.com')) {
+      if (!user || !user.email?.endsWith('@esrent.ae')) {
         if (pathname !== '/admin/login') {
           router.push('/admin/login');
         }
@@ -47,7 +47,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!auth.currentUser?.email?.endsWith('@autoluxe.com')) {
+  if (!auth.currentUser?.email?.endsWith('@esrent.ae')) {
     return null;
   }
 

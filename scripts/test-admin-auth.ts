@@ -24,8 +24,8 @@ async function testAdminAuth() {
     console.log('🔐 Testing admin authentication...');
     
     // Sign in with admin credentials
-    const email = 'admin@autoluxe.com';
-    const password = 'AutoLuxe2025!';
+    const email = 'admin@esrent.ae';
+    const password = 'Admin123!';
     
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     console.log('✅ Successfully signed in:', userCredential.user.email);

@@ -28,7 +28,7 @@ async function resetAdminPassword() {
   try {
     console.log('🔄 Resetting admin password...');
     
-    const email = 'admin@autoluxe.com';
+    const email = 'admin@esrent.ae';
     const newPassword = 'AutoLuxe2025!'; // New secure password
     
     // Get user by email

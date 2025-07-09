@@ -54,7 +54,7 @@ ${selectedType ? `Car Type: ${selectedType}` : ''}`;
           playsInline
           className="object-cover w-full h-full"
         >
-          <source src="/videos/8745991-uhd_3840_2160_30fps.mp4" type="video/mp4" />
+          <source src="/videos/Luxury Cars Free Stock Videos No Copyright.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/50" /> {/* Overlay */}
       </div>

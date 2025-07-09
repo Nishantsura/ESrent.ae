@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Instagram, Mail, Phone } from 'lucide-react';
+import { SiSnapchat } from 'react-icons/si';
 import { FaSnapchat, FaInstagram, FaPhone } from 'react-icons/fa6';
 import { MdOutlineMail } from 'react-icons/md';
 
@@ -34,16 +35,16 @@ const Footer = () => {
             {/* Social Links Row */}
             <div className="flex flex-row gap-6 mt-2">
               <a href="https://snapchat.com/t/JyDBbZS1" target="_blank" rel="noopener noreferrer" aria-label="Snapchat">
-                <FaSnapchat size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+                <SiSnapchat size={22} className="text-white" />
               </a>
               <a href="https://www.instagram.com/elite.slk?igsh=ZjNzZ2Y2dWJ1Z2Y2" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-                <FaInstagram size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+                <Instagram size={22} className="text-white" />
               </a>
               <a href="mailto:info@esrent.com" aria-label="Email">
-                <MdOutlineMail size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+                <Mail size={22} className="text-white" />
               </a>
               <a href="tel:+971553553626" aria-label="Phone">
-                <FaPhone size={22} color="#fff" style={{ fill: 'none', stroke: '#fff', strokeWidth: 2 }} />
+                <Phone size={22} className="text-white" />
               </a>
             </div>
           </div>

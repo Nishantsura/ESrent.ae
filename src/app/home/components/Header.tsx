@@ -44,10 +44,10 @@ export function Header() {
               href="https://wa.me/971553553626"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary hover:bg-secondary/80 text-black font-semibold shadow transition-colors text-base"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold shadow transition-colors text-base"
               style={{ boxShadow: '0 2px 16px 0 rgba(65, 205, 173, 0.15)' }}
             >
-              <MessageCircle size={22} className="text-black" />
+              <MessageCircle size={22} className="text-secondary-foreground" />
               <span className="hidden sm:inline">Quick Book</span>
             </a>
           </div>

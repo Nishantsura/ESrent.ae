@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, getDocs, query, where, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db, hasValidConfig } from '@/lib/firebase';
 
-// GET /api/brands/featured - Get featured brands
 export async function GET(request: NextRequest) {
   try {
-    const featuredQuery = query(
-      collection(db, 'brands'),
-      where('featured', '==', true),
-      limit(8)
-    );
+    // Check if Firebase is properly configured
+    if (!hasValidConfig || !db) {
+      return NextResponse.json(
+        { error: 'Firebase not properly configured' },
+        { status: 500 }
+      );
+    }
+
+    const brandsRef = collection(db, 'brands');
+    const featuredQuery = query(brandsRef, where('featured', '==', true));
+    const querySnapshot = await getDocs(featuredQuery);
     
-    const snapshot = await getDocs(featuredQuery);
-    const brands = snapshot.docs.map(doc => ({
+    const brands = querySnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
     }));
-
+    
     return NextResponse.json(brands);
   } catch (error) {
     console.error('Error fetching featured brands:', error);
-    return NextResponse.json({ error: 'Failed to fetch featured brands' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch featured brands' },
+      { status: 500 }
+    );
   }
 } 

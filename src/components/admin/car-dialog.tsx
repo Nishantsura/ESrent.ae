@@ -278,8 +278,8 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
                     <SelectValue placeholder="Select fuel type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {fuelTypes.map((fuelType) => (
-                      <SelectItem key={fuelType} value={fuelType}>
+                    {fuelTypes.map((fuelType, index) => (
+                      <SelectItem key={`fuel-${index}-${fuelType}`} value={fuelType}>
                         {fuelType}
                       </SelectItem>
                     ))}
@@ -323,8 +323,8 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
                     <SelectValue placeholder="Select car type" />
                   </SelectTrigger>
                   <SelectContent>
-                    {carTypes.map((carType) => (
-                      <SelectItem key={carType} value={carType}>
+                    {carTypes.map((carType, index) => (
+                      <SelectItem key={`cartype-${index}-${carType}`} value={carType}>
                         {carType}
                       </SelectItem>
                     ))}

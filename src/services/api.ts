@@ -3,7 +3,8 @@ import { Category } from '@/types/category';
 import { Brand } from '@/types/brand';
 import { auth } from '@/lib/firebase';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || '';
+// Use local Next.js API routes instead of external backend
+const API_BASE_URL = '';
 // console.log('API_BASE_URL:', API_BASE_URL);
 // console.log('NEXT_PUBLIC_BACKEND_URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
 
@@ -158,10 +159,16 @@ export const carAPI = {
 
   createCar: async (car: Partial<Car>): Promise<Car> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/cars`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(car),
       });
@@ -178,10 +185,16 @@ export const carAPI = {
 
   updateCar: async (id: string, car: Partial<Car>): Promise<Car> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/cars/${encodeURIComponent(id)}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(car),
       });
@@ -199,15 +212,21 @@ export const carAPI = {
 
   deleteCar: async (id: string): Promise<void> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/cars/${encodeURIComponent(id)}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       });
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error || 'Failed to delete car');
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.error || 'Failed to delete car');
       }
     } catch (error) {
       console.error('Error deleting car:', error);
@@ -459,10 +478,16 @@ export const brandAPI = {
 
   createBrand: async (brand: Partial<Brand>): Promise<Brand> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/brands`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(brand)
       });
@@ -479,10 +504,16 @@ export const brandAPI = {
 
   updateBrand: async (id: string, brand: Partial<Brand>): Promise<Brand> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/brands/${id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(brand)
       });
@@ -499,10 +530,16 @@ export const brandAPI = {
 
   deleteBrand: async (id: string): Promise<void> => {
     try {
+      if (!auth.currentUser) {
+        throw new Error('Not authenticated');
+      }
+      const token = await auth.currentUser.getIdToken();
+
       const response = await fetch(`${API_BASE_URL}/api/brands/${id}`, {
         method: 'DELETE',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       });
       if (!response.ok) {

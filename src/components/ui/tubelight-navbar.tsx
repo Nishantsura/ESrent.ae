@@ -42,7 +42,7 @@ export function NavBar({ items, className }: NavBarProps) {
       )}
     >
       <div className="flex items-center justify-center gap-3 bg-background/5 border border-border backdrop-blur-lg py-1 px-1 rounded-full shadow-lg">
-        {items.map((item) => {
+        {items.map((item, index) => {
           const Icon = item.icon
           const isActive = activeTab === item.name
           const isExternal = item.url.startsWith('http')
@@ -54,7 +54,7 @@ export function NavBar({ items, className }: NavBarProps) {
 
           return (
             <LinkComponent
-              key={item.name}
+              key={`nav-${index}-${item.name}`}
               {...linkProps}
               className={cn(
                 "relative cursor-pointer text-sm font-semibold px-6 py-2 rounded-full transition-colors",

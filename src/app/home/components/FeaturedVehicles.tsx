@@ -75,17 +75,17 @@ export function FeaturedVehicles({ cars }: FeaturedVehiclesProps) {
       {/* Selected Filters Display */}
       {hasActiveFilters && (
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          {selectedFilters.types.map((type) => (
+          {selectedFilters.types.map((type, index) => (
             <span
-              key={type}
+              key={`type-${index}-${type}`}
               className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
             </span>
           ))}
-          {selectedFilters.tags.map((tag) => (
+          {selectedFilters.tags.map((tag, index) => (
             <span
-              key={tag}
+              key={`tag-${index}-${tag}`}
               className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium"
             >
               {tag.charAt(0).toUpperCase() + tag.slice(1)}

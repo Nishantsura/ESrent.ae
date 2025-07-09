@@ -27,10 +27,13 @@ export const TestimonialsColumn = (props: {
         className="flex flex-col gap-6 pb-6 bg-background"
       >
         {[
-          ...new Array(2).fill(0).map((_, index) => (
-            <React.Fragment key={index}>
-              {props.testimonials.map(({ car, text, name, role }, i) => (
-                <div className="p-10 rounded-3xl border border-border shadow-lg shadow-primary/10 max-w-xs w-full bg-background text-foreground" key={i}>
+          ...new Array(2).fill(0).map((_, groupIndex) => (
+            <React.Fragment key={`group-${groupIndex}`}>
+              {props.testimonials.map(({ car, text, name, role }, testimonialIndex) => (
+                <div 
+                  className="p-10 rounded-3xl border border-border shadow-lg shadow-primary/10 max-w-xs w-full bg-background text-foreground" 
+                  key={`testimonial-${groupIndex}-${testimonialIndex}`}
+                >
                   <div className="text-base opacity-90">
                     <span className="text-secondary font-semibold">Rented {car}</span>
                     {text.replace(/^Rented [^—]+ — ?/, ' ')}

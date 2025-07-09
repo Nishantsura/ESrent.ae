@@ -186,9 +186,9 @@ const FilterModalComponent = memo(({ onFiltersChange, shouldReset }: FilterModal
                 <SelectValue placeholder="Select transmission" />
               </SelectTrigger>
               <SelectContent>
-                {transmissionOptions.map((option) => (
+                {transmissionOptions.map((option, index) => (
                   <SelectItem 
-                    key={option} 
+                    key={`transmission-${index}-${option}`} 
                     value={option.toLowerCase()}
                   >
                     {option}
@@ -200,10 +200,10 @@ const FilterModalComponent = memo(({ onFiltersChange, shouldReset }: FilterModal
 
           <div className="space-y-2">
             <Label>Car Types</Label>
-            <div className="flex flex-wrap gap-2">
-              {carTypes.map((type) => (
+            <div className="grid grid-cols-2 gap-2">
+              {carTypes.map((type, index) => (
                 <Button
-                  key={type}
+                  key={`cartype-${index}-${type}`}
                   variant={state.types.includes(type.toLowerCase()) ? "default" : "outline"}
                   onClick={() => {
                     const newTypes = state.types.includes(type.toLowerCase())
@@ -226,10 +226,10 @@ const FilterModalComponent = memo(({ onFiltersChange, shouldReset }: FilterModal
 
           <div className="space-y-2">
             <Label>Features</Label>
-            <div className="flex flex-wrap gap-2">
-              {carTags.map((tag) => (
+            <div className="grid grid-cols-2 gap-2">
+              {carTags.map((tag, index) => (
                 <Button
-                  key={tag}
+                  key={`tag-${index}-${tag}`}
                   variant={state.tags.includes(tag.toLowerCase()) ? "default" : "outline"}
                   onClick={() => {
                     const newTags = state.tags.includes(tag.toLowerCase())

@@ -261,11 +261,11 @@ export default function CategoriesPage() {
               </Button>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              {selectedFilters.types.map((type) => {
+              {selectedFilters.types.map((type, index) => {
                 const category = carTypes.find(c => c.slug === type);
                 return (
                   <span
-                    key={type}
+                    key={`active-type-${index}-${type}`}
                     className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1"
                   >
                     <span>{category?.name || type}</span>
@@ -281,11 +281,11 @@ export default function CategoriesPage() {
                   </span>
                 );
               })}
-              {selectedFilters.fuelTypes.map((type) => {
+              {selectedFilters.fuelTypes.map((type, index) => {
                 const category = fuelTypes.find(c => c.slug === type);
                 return (
                   <span
-                    key={type}
+                    key={`active-fuel-${index}-${type}`}
                     className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1"
                   >
                     <span>{category?.name || type}</span>
@@ -301,11 +301,11 @@ export default function CategoriesPage() {
                   </span>
                 );
               })}
-              {selectedFilters.features.map((feature) => {
+              {selectedFilters.features.map((feature, index) => {
                 const category = features.find(c => c.slug === feature);
                 return (
                   <span
-                    key={feature}
+                    key={`active-feature-${index}-${feature}`}
                     className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium flex items-center gap-1"
                   >
                     <span>{category?.name || feature}</span>

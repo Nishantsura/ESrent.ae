@@ -106,8 +106,8 @@ ${selectedType ? `Car Type: ${selectedType}` : ''}`;
                 className="w-full px-4 py-3 bg-black/50 border border-white/10 rounded-lg text-white appearance-none"
               >
                 <option value="">Select car type</option>
-                {carTypes.map((type) => (
-                  <option key={type} value={type}>{type}</option>
+                {carTypes.map((type, index) => (
+                  <option key={`cartype-${index}-${type}`} value={type}>{type}</option>
                 ))}
               </select>
             </div>
@@ -116,9 +116,9 @@ ${selectedType ? `Car Type: ${selectedType}` : ''}`;
             <div className="space-y-2">
               <label className="text-white text-sm font-medium">Duration</label>
               <div className="flex gap-2">
-                {durations.map((duration) => (
+                {durations.map((duration, index) => (
                   <button
-                    key={duration.value}
+                    key={`duration-${index}-${duration.value}`}
                     onClick={() => setSelectedDuration(duration.value)}
                     className={`flex-1 px-4 py-3 rounded-lg transition-colors ${
                       selectedDuration === duration.value

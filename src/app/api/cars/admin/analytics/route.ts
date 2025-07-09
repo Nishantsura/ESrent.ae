@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export async function GET(request: NextRequest) {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-    console.log('Backend URL:', backendUrl); // Debug log
-
-    if (!backendUrl) {
-      return NextResponse.json(
-        { error: 'Backend URL not configured' },
-        { status: 500 }
-      );
-    }
+    // No need for external backend URL - using Firebase directly
+    console.log('Fetching analytics from Firebase...'); // Debug log
 
     const token = request.headers.get('authorization');
     console.log('Received token:', token ? 'Present' : 'Missing'); // Debug log
@@ -23,43 +18,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const url = `${backendUrl}/cars/admin/analytics`;
-    console.log('Fetching from:', url); // Debug log
+    // Get counts from Firebase collections
+    const [carsSnapshot, brandsSnapshot, categoriesSnapshot] = await Promise.all([
+      getDocs(collection(db, 'cars')),
+      getDocs(collection(db, 'brands')),
+      getDocs(collection(db, 'categories'))
+    ]);
 
-    const response = await fetch(url, {
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json'
-      }
-    });
+    const analytics = {
+      totalCars: carsSnapshot.size,
+      totalBrands: brandsSnapshot.size,
+      totalCategories: categoriesSnapshot.size,
+      // Calculate additional stats
+      availableCars: carsSnapshot.docs.filter(doc => doc.data().isAvailable).length,
+      featuredCars: carsSnapshot.docs.filter(doc => doc.data().isFeatured).length,
+    };
 
-    console.log('Backend response status:', response.status); // Debug log
+    console.log('Analytics result:', analytics); // Debug log
 
-    // Get response as text first
-    const text = await response.text();
-    console.log('Backend response text:', text); // Debug log
-
-    // Try to parse JSON
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      console.error('JSON parse error:', e); // Debug log
-      return NextResponse.json(
-        { error: 'Invalid JSON response from backend', details: text.substring(0, 100) },
-        { status: 502 }
-      );
-    }
-
-    // If response is not ok, format the error properly
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: data.error || 'Backend request failed', details: data.details || response.statusText },
-        { status: response.status }
-      );
-    }
-
-    return NextResponse.json(data);
+    return NextResponse.json(analytics);
   } catch (error: any) {
     console.error('Analytics API error:', error);
     return NextResponse.json(

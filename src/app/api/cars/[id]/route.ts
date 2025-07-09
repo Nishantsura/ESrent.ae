@@ -1,6 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase-admin/firestore';
 import { db } from '@/lib/firebase';
+import { verifyAuth, createAuthError } from '@/lib/auth';
+import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
+
+// Get Firebase Admin instance
+const getFirebaseAdmin = () => {
+  if (getApps().length === 0) {
+    const serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    };
+
+    if (!serviceAccount.projectId || !serviceAccount.clientEmail || !serviceAccount.privateKey) {
+      throw new Error('Missing Firebase Admin credentials');
+    }
+
+    return initializeApp({
+      credential: cert(serviceAccount),
+    });
+  }
+  return getApp();
+};
 
 // GET /api/cars/[id] - Get car by ID
 export async function GET(
@@ -31,11 +54,20 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  
+  // Verify authentication
+  try {
+    await verifyAuth(request);
+  } catch (error) {
+    console.error('Authentication failed:', error);
+    return createAuthError('Authentication required to update cars');
+  }
+  
   try {
     const body = await request.json();
     
-    // Remove id from body if present
-    const { id, ...updateData } = body;
+    // Remove id from body if present (avoid variable name conflict)
+    const { id: bodyId, ...updateData } = body;
     
     // Add updatedAt timestamp
     const carData = {
@@ -43,7 +75,11 @@ export async function PUT(
       updatedAt: new Date().toISOString()
     };
 
-    await updateDoc(doc(db, 'cars', id), carData);
+    // Use Firebase Admin SDK for server-side operations
+    const app = getFirebaseAdmin();
+    const adminDb = getFirestore(app);
+    
+    await adminDb.collection('cars').doc(id).update(carData);
     
     return NextResponse.json({
       id: id,
@@ -61,8 +97,21 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
+  
+  // Verify authentication
   try {
-    await deleteDoc(doc(db, 'cars', id));
+    await verifyAuth(request);
+  } catch (error) {
+    console.error('Authentication failed:', error);
+    return createAuthError('Authentication required to delete cars');
+  }
+  
+  try {
+    // Use Firebase Admin SDK for server-side operations
+    const app = getFirebaseAdmin();
+    const adminDb = getFirestore(app);
+    
+    await adminDb.collection('cars').doc(id).delete();
     
     return NextResponse.json({ message: 'Car deleted successfully' });
   } catch (error) {

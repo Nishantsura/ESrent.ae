@@ -32,6 +32,10 @@ export async function GET(
 ) {
   const { id } = await params;
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Firebase not configured' }, { status: 500 });
+    }
+    
     const carDoc = await getDoc(doc(db, 'cars', id));
     
     if (!carDoc.exists()) {

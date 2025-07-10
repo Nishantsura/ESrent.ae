@@ -5,15 +5,18 @@ import { usePathname } from "next/navigation";
 
 declare global {
   interface Window {
-    $crisp: any[];
+    $crisp: unknown[];
     CRISP_WEBSITE_ID: string;
   }
 }
 
 export default function CrispChat() {
-  if (usePathname()?.includes('/admin')) return null;
+  const pathname = usePathname();
 
   useEffect(() => {
+    // Skip loading Crisp for admin pages
+    if (pathname?.includes('/admin')) return;
+
     window.$crisp = [];
     window.CRISP_WEBSITE_ID = "6f50da6f-17e3-44db-9542-5921d7d4adde";
     
@@ -30,7 +33,7 @@ export default function CrispChat() {
     script.src = "https://client.crisp.chat/l.js";
     script.async = true;
     document.head.appendChild(script);
-  }, []);
+  }, [pathname]);
 
   return null;
 }

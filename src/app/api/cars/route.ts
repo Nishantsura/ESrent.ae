@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
 import { db } from '@/lib/firebase';
 import { verifyAuth, createAuthError } from '@/lib/auth';
@@ -90,10 +90,16 @@ export async function GET(request: NextRequest) {
       : collection(db!, 'cars');
 
     const snapshot = await getDocs(carsQuery);
+    interface CarData {
+      id: string;
+      dailyPrice: number;
+      [key: string]: unknown;
+    }
+    
     let cars = snapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data()
-    })) as any[];
+    })) as CarData[];
 
     // Apply price filters (client-side since Firestore doesn't support range queries with other filters)
     if (minPrice) {

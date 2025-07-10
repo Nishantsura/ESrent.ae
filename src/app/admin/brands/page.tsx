@@ -45,18 +45,17 @@ export default function AdminBrands() {
     const fetchBrands = async () => {
       try {
         setError(null);
-        const token = await auth.currentUser?.getIdToken();
-        if (!token) {
+        if (!auth || !auth.currentUser) {
           throw new Error('Not authenticated');
         }
 
         const brandsData = await brandAPI.getAllBrands();
         setBrands(brandsData);
-      } catch (error: any) {
+      } catch (error) {
         console.error('Error fetching brands:', error);
         setError({
           error: 'Failed to fetch brands',
-          details: error.message
+          details: error instanceof Error ? error.message : 'Unknown error'
         });
       } finally {
         setLoading(false);
@@ -93,12 +92,12 @@ export default function AdminBrands() {
       setBrands(brandsData);
       setDialogOpen(false);
       setSelectedBrand(undefined);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving brand:', error);
       setStatusModal({
         open: true,
         title: 'Error',
-        description: error.message || 'An error occurred while saving the brand.',
+        description: error instanceof Error ? error.message : 'An error occurred while saving the brand.',
         status: 'error',
       });
     }
@@ -121,12 +120,12 @@ export default function AdminBrands() {
       setBrands(brandsData);
       setDeleteDialogOpen(false);
       setSelectedBrand(undefined);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting brand:', error);
       setStatusModal({
         open: true,
         title: 'Error',
-        description: error.message || 'An error occurred while deleting the brand.',
+        description: error instanceof Error ? error.message : 'An error occurred while deleting the brand.',
         status: 'error',
       });
     }

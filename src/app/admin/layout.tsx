@@ -18,6 +18,11 @@ export default function AdminLayout({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user || !user.email?.endsWith('@esrent.ae')) {
         if (pathname !== '/admin/login') {
@@ -47,7 +52,7 @@ export default function AdminLayout({
     );
   }
 
-  if (!auth.currentUser?.email?.endsWith('@esrent.ae')) {
+  if (!auth || !auth.currentUser?.email?.endsWith('@esrent.ae')) {
     return null;
   }
 

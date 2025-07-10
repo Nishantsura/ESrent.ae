@@ -27,6 +27,10 @@ export function Sidebar() {
 
   const handleLogout = async () => {
     try {
+      if (!auth) {
+        console.error('Auth not initialized');
+        return;
+      }
       await signOut(auth);
     } catch (error) {
       console.error('Error signing out:', error);

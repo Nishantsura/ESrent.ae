@@ -18,27 +18,15 @@ export default function AdminCategories() {
   const [error, setError] = useState<{ error: string; details?: string } | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category | undefined>();
-  const [statusModal, setStatusModal] = useState<{
-    open: boolean;
-    title: string;
-    description: string;
-    status: 'success' | 'error';
-  }>({
-    open: false,
-    title: '',
-    description: '',
-    status: 'success',
-  });
   const { toast } = useToast();
 
   const fetchCategories = async () => {
     try {
       setError(null);
       setLoading(true);
-      if (!auth.currentUser) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
-      const token = await auth.currentUser.getIdToken();
 
       // Fetch all category types
               const [carTypes, fuelTypes, tags] = await Promise.all([
@@ -52,11 +40,11 @@ export default function AdminCategories() {
         .sort((a, b) => a.name.localeCompare(b.name));
 
       setCategories(allCategories);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching categories:', error);
       setError({
         error: 'Failed to fetch categories',
-        details: error.message
+        details: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
       setLoading(false);
@@ -81,13 +69,12 @@ export default function AdminCategories() {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
 
     try {
-      if (!auth.currentUser) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
       if (!category.id) {
         throw new Error('Category ID is required');
       }
-      const token = await auth.currentUser.getIdToken();
 
       await categoryAPI.deleteCategory(category.id);
       toast({
@@ -95,11 +82,11 @@ export default function AdminCategories() {
         description: `${category.name} has been deleted successfully.`,
       });
       fetchCategories();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting category:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to delete category. Please try again.',
+        description: error instanceof Error ? error.message : 'Failed to delete category. Please try again.',
         variant: 'destructive',
       });
     }
@@ -107,10 +94,9 @@ export default function AdminCategories() {
 
   const handleSaveCategory = async (categoryData: Partial<Category>) => {
     try {
-      if (!auth.currentUser) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
-      const token = await auth.currentUser.getIdToken();
 
       let savedCategory: Category;
       if (selectedCategory?.id) {
@@ -134,7 +120,7 @@ export default function AdminCategories() {
 
       // Refresh the list to ensure we have the latest data
       fetchCategories();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving category:', error);
       throw error; // Let the dialog component handle the error display
     }

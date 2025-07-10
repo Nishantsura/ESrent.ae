@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { doc, updateDoc, deleteDoc, collection, query, where, getDocs, getDoc } from 'firebase/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
-import { db } from '@/lib/firebase';
 import { verifyAuth, createAuthError } from '@/lib/auth';
 import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
 

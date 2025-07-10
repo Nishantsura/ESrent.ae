@@ -37,19 +37,18 @@ export default function AdminCars() {
     try {
       setError(null);
       setLoading(true);
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
 
       const carsData = await carService.getAllCars();
       // Force a re-render by creating a new array
       setCars([...carsData]);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error fetching cars:', error);
       setError({
         error: 'Failed to fetch cars',
-        details: error.message
+        details: error instanceof Error ? error.message : 'Unknown error'
       });
     } finally {
       setLoading(false);
@@ -74,8 +73,7 @@ export default function AdminCars() {
     if (!window.confirm('Are you sure you want to delete this car?')) return;
 
     try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
 
@@ -85,7 +83,7 @@ export default function AdminCars() {
         description: `${car.name} has been deleted successfully.`,
       });
       fetchCars();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error deleting car:', error);
       toast({
         title: 'Error',
@@ -97,8 +95,7 @@ export default function AdminCars() {
 
   const handleSaveCar = async (carData: Partial<Car>) => {
     try {
-      const token = await auth.currentUser?.getIdToken();
-      if (!token) {
+      if (!auth || !auth.currentUser) {
         throw new Error('Not authenticated');
       }
 
@@ -129,7 +126,7 @@ export default function AdminCars() {
 
       // Fetch fresh data in the background
       fetchCars();
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error saving car:', error);
       setStatusModal({
         open: true,

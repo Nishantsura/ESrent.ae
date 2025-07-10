@@ -18,6 +18,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    if (!db) {
+      throw new Error('Firebase not configured');
+    }
+
     // Get counts from Firebase collections
     const [carsSnapshot, brandsSnapshot, categoriesSnapshot] = await Promise.all([
       getDocs(collection(db, 'cars')),
@@ -37,13 +41,13 @@ export async function GET(request: NextRequest) {
     console.log('Analytics result:', analytics); // Debug log
 
     return NextResponse.json(analytics);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Analytics API error:', error);
     return NextResponse.json(
       { 
         error: 'Failed to fetch analytics', 
-        details: error.message,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        details: error instanceof Error ? error.message : 'Unknown error',
+        stack: process.env.NODE_ENV === 'development' && error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     );

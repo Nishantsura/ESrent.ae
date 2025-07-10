@@ -17,10 +17,10 @@ export default function AdminDashboard() {
     const fetchCars = async () => {
       try {
         setError(null);
-        const token = await auth.currentUser?.getIdToken();
-        if (!token) {
+        if (!auth || !auth.currentUser) {
           throw new Error('Not authenticated');
         }
+        const token = await auth.currentUser.getIdToken();
 
         const carsData = await carAPI.getAllCars();
         setCars(carsData);

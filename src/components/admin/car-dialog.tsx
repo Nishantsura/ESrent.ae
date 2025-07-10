@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Car } from '@/types/car';
 import { Brand } from '@/types/brand';
-import { Category } from '@/types/category';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,8 +17,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
-import { brandAPI, categoryAPI } from '@/services/api';
+import { brandAPI } from '@/services/api';
 import { uploadImages } from '@/lib/uploadImages';
 import { Image as ImageIcon, X, Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -61,8 +59,6 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
   }, [car]);
 
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [tagCategories, setTagCategories] = useState<Category[]>([]);
-  const [carTypeCategories, setCarTypeCategories] = useState<Category[]>([]);
   type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid';
   type CarType = 'Supercar' | 'SUV' | 'Sedan' | 'Hatchback' | 'Coupe' | 'Convertible' | 'Wagon';
   const fuelTypes: FuelType[] = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
@@ -72,14 +68,8 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [brandsData, tagData, carTypeData] = await Promise.all([
-          brandAPI.getAllBrands(),
-          categoryAPI.getCategoriesByType('tag'),
-          categoryAPI.getCategoriesByType('carType')
-        ]);
+        const brandsData = await brandAPI.getAllBrands();
         setBrands(brandsData);
-        setTagCategories(tagData);
-        setCarTypeCategories(carTypeData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -166,20 +156,20 @@ export function CarDialog({ car, open, onOpenChange, onSave }: CarDialogProps) {
       // Required fields for server
       name: formData.name.trim(),
       brand: formData.brand.trim(),
-      model: formData.model?.trim() || formData.name.trim(), // Use name as fallback for model
+      model: formData.model?.trim() || formData.name.trim(),
       year: formData.year || new Date().getFullYear(),
       transmission: formData.transmission || 'Automatic',
-      fuel: formData.fuel || 'Petrol', // Server expects 'fuel', not 'fuelType'
+      fuelType: formData.fuel || 'Petrol', // Backend expects 'fuelType'
       dailyPrice: formData.dailyPrice || 0,
+      type: formData.category || 'Sedan', // Backend expects 'type'
       
       // Optional fields that server accepts
-      category: formData.category || 'Sedan', // Server expects 'category', not 'type'
       mileage: formData.mileage || 0,
       images: formData.images || [],
       description: formData.description || '',
       features: formData.features || [],
-      isAvailable: formData.isAvailable ?? true, // Server expects 'isAvailable'
-      isFeatured: formData.isFeatured ?? false, // Server expects 'isFeatured'
+      available: formData.isAvailable ?? true, // Backend expects 'available'
+      featured: formData.isFeatured ?? false, // Backend expects 'featured'
     };
     
     await onSave(carData);

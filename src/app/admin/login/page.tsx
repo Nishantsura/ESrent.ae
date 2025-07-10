@@ -15,6 +15,8 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!auth) return;
+    
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.email?.endsWith('@esrent.ae')) {
         router.push('/admin');
@@ -30,6 +32,11 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      if (!auth) {
+        setError('Authentication not initialized');
+        return;
+      }
+      
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       
       if (!userCredential.user.email?.endsWith('@esrent.ae')) {

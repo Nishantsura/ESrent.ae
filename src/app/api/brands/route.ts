@@ -28,6 +28,9 @@ const getFirebaseAdmin = () => {
 // GET /api/brands - Get all brands
 export async function GET(request: NextRequest) {
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Firebase not configured' }, { status: 500 });
+    }
     const brandsQuery = query(collection(db, 'brands'), orderBy('name'));
     const snapshot = await getDocs(brandsQuery);
     const brands = snapshot.docs.map(doc => ({

@@ -9,6 +9,10 @@ export async function GET(
 ) {
   const { slug } = await params;
   try {
+    if (!db) {
+      return NextResponse.json({ error: 'Firebase not configured' }, { status: 500 });
+    }
+    
     const brandQuery = query(
       collection(db, 'brands'),
       where('slug', '==', decodeURIComponent(slug)),

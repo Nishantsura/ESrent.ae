@@ -168,7 +168,7 @@ router.get('/:id', setCacheControl(300), async (req, res) => {
 });
 
 // Create new car
-router.post('/', setCacheControl(0), async (req, res) => {
+router.post('/', requireAdmin, setCacheControl(0), async (req, res) => {
   try {
     const {
       name,
@@ -230,7 +230,7 @@ router.post('/', setCacheControl(0), async (req, res) => {
 });
 
 // Update car
-router.put('/:id', setCacheControl(0), async (req, res) => {
+router.put('/:id', requireAdmin, setCacheControl(0), async (req, res) => {
   try {
     const updates = { ...req.body };
     delete updates.id; // Remove id from updates if present
@@ -244,7 +244,7 @@ router.put('/:id', setCacheControl(0), async (req, res) => {
 });
 
 // Delete car
-router.delete('/:id', setCacheControl(0), async (req, res) => {
+router.delete('/:id', requireAdmin, setCacheControl(0), async (req, res) => {
   try {
     await carsRef.doc(req.params.id).delete();
     

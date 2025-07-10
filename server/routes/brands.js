@@ -5,6 +5,32 @@ const router = express.Router();
 const db = admin.firestore();
 const brandsRef = db.collection('brands');
 
+// Admin middleware
+const requireAdmin = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'No bearer token' });
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    if (!decodedToken.email?.endsWith('@esrent.ae')) {
+      return res.status(403).json({ error: 'Not an authorized email domain' });
+    }
+
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    console.error('Auth error:', error);
+    res.status(401).json({ 
+      error: 'Authentication failed',
+      details: error.message 
+    });
+  }
+};
+
 // Get brand by slug
 router.get('/slug/:slug', async (req, res) => {
   try {
@@ -62,7 +88,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new brand
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
   try {
     const { name, logo, slug, featured = false } = req.body;
     if (!name || !logo || !slug) {
@@ -85,7 +111,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update brand
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
   try {
     const { name, logo, slug, featured, carCount } = req.body;
     const updates = {};
@@ -104,7 +130,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete brand
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     await brandsRef.doc(req.params.id).delete();
     res.json({ message: 'Brand deleted successfully' });

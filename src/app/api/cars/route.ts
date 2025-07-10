@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { collection, getDocs, addDoc, query, where, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore';
 import { getFirestore } from 'firebase-admin/firestore';
 import { db } from '@/lib/firebase';
 import { verifyAuth, createAuthError } from '@/lib/auth';
@@ -8,18 +8,53 @@ import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
 // Get Firebase Admin instance
 const getFirebaseAdmin = () => {
   if (getApps().length === 0) {
-    const serviceAccount = {
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    };
+    let serviceAccount;
+
+    // Try to get service account from environment variables
+    // Option 1: Use complete service account JSON (recommended)
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
+      try {
+        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+      } catch (e) {
+        console.error('Failed to parse FIREBASE_SERVICE_ACCOUNT_JSON:', e);
+        throw new Error('Invalid FIREBASE_SERVICE_ACCOUNT_JSON format');
+      }
+    }
+    // Option 2: Use individual environment variables
+    else if (
+      process.env.FIREBASE_PROJECT_ID &&
+      process.env.FIREBASE_CLIENT_EMAIL &&
+      process.env.FIREBASE_PRIVATE_KEY
+    ) {
+      serviceAccount = {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      };
+    }
+    // Option 3: Use the public project ID for limited functionality
+    else if (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+      console.warn('Using client-side Firebase config for admin operations. Limited functionality.');
+      return initializeApp({
+        projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      });
+    }
+    else {
+      throw new Error(
+        'Firebase Admin credentials not found. Please set either:\n' +
+        '1. FIREBASE_SERVICE_ACCOUNT_JSON (recommended)\n' +
+        '2. FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY\n' +
+        '3. Or ensure NEXT_PUBLIC_FIREBASE_PROJECT_ID is set'
+      );
+    }
 
     if (!serviceAccount.projectId || !serviceAccount.clientEmail || !serviceAccount.privateKey) {
-      throw new Error('Missing Firebase Admin credentials');
+      throw new Error('Incomplete Firebase service account credentials');
     }
 
     return initializeApp({
       credential: cert(serviceAccount),
+      projectId: serviceAccount.projectId,
     });
   }
   return getApp();
@@ -46,9 +81,13 @@ export async function GET(request: NextRequest) {
     if (fuel) constraints.push(where('fuel', '==', fuel));
     if (available !== null) constraints.push(where('isAvailable', '==', available === 'true'));
 
+    if (!db) {
+      return NextResponse.json({ error: 'Firebase not configured' }, { status: 500 });
+    }
+
     const carsQuery = constraints.length > 0 
-      ? query(collection(db, 'cars'), ...constraints)
-      : collection(db, 'cars');
+      ? query(collection(db!, 'cars'), ...constraints)
+      : collection(db!, 'cars');
 
     const snapshot = await getDocs(carsQuery);
     let cars = snapshot.docs.map(doc => ({
@@ -92,11 +131,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Set default values
+    // Set default values and normalize data
     const carData = {
       ...body,
       isAvailable: body.isAvailable ?? true,
       isFeatured: body.isFeatured ?? false,
+      featured: body.isFeatured ?? false, // Add for backward compatibility
+      available: body.isAvailable ?? true, // Add for backward compatibility
       mileage: body.mileage ?? 0,
       features: body.features ?? [],
       images: body.images ?? [],

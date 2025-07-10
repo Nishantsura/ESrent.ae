@@ -14,8 +14,20 @@ interface FeaturedBrandsProps {
 }
 
 export function FeaturedBrands({ brands }: FeaturedBrandsProps) {
-  // Duplicate brands for seamless looping
-  const loopBrands = [...brands, ...brands];
+  // Filter out brands with missing data and duplicate brands for seamless looping
+  const validBrands = brands.filter(brand => 
+    brand && 
+    brand.name && 
+    brand.logo && 
+    brand.slug
+  );
+  
+  const loopBrands = [...validBrands, ...validBrands];
+
+  // Don't render if no valid brands
+  if (validBrands.length === 0) {
+    return null;
+  }
 
   return (
     <motion.section
@@ -68,6 +80,11 @@ export function FeaturedBrands({ brands }: FeaturedBrandsProps) {
                       alt={brand.name}
                       fill
                       className="object-contain"
+                      onError={(e) => {
+                        // Fallback to a default brand image if the logo fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/ES logo (1).svg';
+                      }}
                     />
                   </div>
                   <span className="body-2 font-medium text-center whitespace-nowrap mt-2 text-white transition-colors hover:text-primary">

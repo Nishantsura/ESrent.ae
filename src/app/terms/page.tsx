@@ -74,7 +74,7 @@ export default function TermsAndConditions() {
               <p className="text-gray-600 mb-4">For any questions or concerns regarding these terms, please contact us at:</p>
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="space-y-2 text-gray-600">
-                  <p><span className="font-medium">Email:</span> support@autoluxe.com</p>
+                  <p><span className="font-medium">Email:</span> support@esrent.ae</p>
                   <p><span className="font-medium">Phone:</span> +971 XX XXX XXXX</p>
                   <p><span className="font-medium">Address:</span> Dubai, UAE</p>
                 </div>

@@ -115,16 +115,47 @@ function FeaturedContent() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [partialError, setPartialError] = useState<string | null>(null);
+  const [configError, setConfigError] = useState<boolean>(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [cars, brands, categories] = await Promise.all([
+        // Check Firebase configuration first
+        if (!process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || !process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+          setConfigError(true);
+          setLoading(false);
+          return;
+        }
+
+        // Load data with individual error handling
+        const results = await Promise.allSettled([
           fetchWithCache('featuredCars', firebaseCarService.getFeaturedCars),
           fetchWithCache('featuredBrands', firebaseBrandService.getFeaturedBrands),
           fetchWithCache('featuredCategories', firebaseCategoryService.getFeaturedCategories),
         ]);
-        setData({ cars, brands, categories });
+
+        const cars = results[0].status === 'fulfilled' ? results[0].value : [];
+        const brands = results[1].status === 'fulfilled' ? results[1].value : [];
+        const categories = results[2].status === 'fulfilled' ? results[2].value : [];
+
+        // Check for any failures
+        const failures = results.filter(result => result.status === 'rejected');
+        if (failures.length > 0) {
+          console.warn('Some data failed to load:', failures);
+          setPartialError(`${failures.length} data source(s) failed to load, but showing available content.`);
+        }
+
+        // Filter out any invalid data
+        const validCars = cars.filter(car => car && car.id && car.name);
+        const validBrands = brands.filter(brand => brand && brand.id && brand.name && brand.logo);
+        const validCategories = categories.filter(category => category && category.name);
+
+        setData({ 
+          cars: validCars, 
+          brands: validBrands, 
+          categories: validCategories 
+        });
       } catch (err) {
         console.error('Error loading data:', err);
         setError(err instanceof Error ? err : new Error('Failed to load data'));
@@ -135,6 +166,32 @@ function FeaturedContent() {
 
     loadData();
   }, []);
+
+  if (configError) {
+    return (
+      <div className="text-center p-8 bg-red-50 border border-red-200 rounded-lg">
+        <h3 className="text-2xl font-bold text-red-600 mb-4">Firebase Configuration Required</h3>
+        <p className="text-red-700 mb-4">
+          The Firebase environment variables are not configured. Please set up your Firebase configuration:
+        </p>
+        <div className="text-left bg-red-100 p-4 rounded-md mb-4 text-sm">
+          <p className="font-semibold mb-2">Create a <code>.env.local</code> file in your project root with:</p>
+          <pre className="text-xs whitespace-pre-wrap">
+{`NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key_here
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id`}
+          </pre>
+        </div>
+        <p className="text-red-700">
+          Get these values from your Firebase Console → Project Settings → General → Your apps
+        </p>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -157,6 +214,11 @@ function FeaturedContent() {
 
   return (
     <>
+      {partialError && (
+        <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+          <p className="text-sm text-yellow-800">{partialError}</p>
+        </div>
+      )}
       <FeaturedBrands brands={data.brands} />
       <FeaturedVehicles cars={data.cars} />
       <DemoOne />

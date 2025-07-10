@@ -14,4 +14,10 @@ export interface Car {
   category?: string;
   isAvailable?: boolean;
   isFeatured?: boolean;
+  
+  // Legacy fields for backward compatibility
+  fuelType?: string; // Some cars might use this instead of 'fuel'
+  type?: string; // Some cars might use this instead of 'category'
+  available?: boolean; // Some cars might use this instead of 'isAvailable'
+  featured?: boolean; // Some cars might use this instead of 'isFeatured'
 }
